@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kauppa</title>
+
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <script src="../../scripts/products/productStorage.js"></script>
+        <script src="../../scripts/products/cart.js"></script>
+        <script src="../../scripts/products/loadProducts.js"></script>
+        <script src="../../scripts/utils/utils.js"></script>
+        <script src="../../scripts/products/search.js"></script>
+
+        <link rel="stylesheet" href="../../styles/main.css" />
+        <link rel="stylesheet" href="../../styles/header.css" />
+        <link rel="stylesheet" href="../../styles/footer.css" />
+    </head>
+    <body>
+        <header class="header h-[6rem] md:px-4">
+            <div
+                class="md:w-full md:h-[60%] h-[55%] flex justify-center md:justify-between md:gap-4 gap-2"
+            >
+                <a
+                    href="../../index.html"
+                    class="flex items-center md:px-8 px-2 rounded-md bg-orange-500"
+                >
+                    <h1 class="md:text-xl text-sm">Kauppa</h1>
+                </a>
+                <div class="searchBar md:w-full w-[45%]">
+                    <div class="w-full h-full flex items-center relative">
+                        <form id="search" class="flex w-full">
+                            <button type="submit" class="flex">
+                                <img
+                                    src="../../media/images/header/search.webp"
+                                    alt="search"
+                                    class="absolute pl-2 md:w-[30px] w-[25px]"
+                                    id="searchIcon"
+                                />
+                            </button>
+                            <input
+                                type="text"
+                                placeholder="Hae tuotteita"
+                                name="searchValue"
+                                required
+                                class="w-full h-full bg-transparent outline-none md:px-10 px-8 md:text-base text-sm"
+                            />
+                        </form>
+                    </div>
+                </div>
+                <a
+                    href="../ostoskori/index.html"
+                    class="cart relative"
+                    id="cartLink"
+                >
+                    <img
+                        src="../../media/images/header/cart-light.webp"
+                        alt="cart"
+                        id="cartIcon"
+                        class="md:w-[30px] w-[25px]"
+                    />
+                    <div id="cartItems"></div>
+                </a>
+            </div>
+            <div class="h-[40%] flex text-white">
+                <a
+                    href="../tuotteet/index.html?type=Computers"
+                    class="md:py-[2px] md:px-[2rem] md:text-base text-xs px-2 text-white hover:text-black hover:bg-white"
+                    id="computers"
+                >
+                    Tietokoneet
+                </a>
+                <a
+                    href="../tuotteet/index.html?type=Components"
+                    class="md:py-[2px] md:px-[2rem] md:text-base text-xs px-2 text-white hover:text-black hover:bg-white"
+                    id="components"
+                >
+                    Komponentit
+                </a>
+                <a
+                    href="../tuotteet/index.html?type=Peripherals"
+                    class="md:py-[2px] md:px-[2rem] md:text-base text-xs px-2 text-white hover:text-black hover:bg-white"
+                    id="peripherals"
+                >
+                    Oheislaitteet
+                </a>
+                <a
+                    href="../tuotteet/index.html?type=Gaming"
+                    class="md:py-[2px] md:px-[2rem] md:text-base text-xs px-2 text-white hover:text-black hover:bg-white"
+                    id="gaming"
+                >
+                    Pelaaminen
+                </a>
+            </div>
+        </header>
+
+        <main class="content flex justify-center py-4">
+            <div class="flex flex-col gap-2" id="productsPageContainer"></div>
+        </main>
+
+        <footer class="footer">
+            <h1>Copyright © 2023 Kauppa</h1>
+        </footer>
+
+        <script src="../../scripts/ui/uiChanges.js"></script>
+        <script>
+            const urlParams = new URLSearchParams(location.search);
+            const typeValue = urlParams.get('type');
+            const searchValue = urlParams.get('search')
+
+            const titles = {
+                Computers: 'Tietokoneet',
+                Components: 'Komponentit',
+                Peripherals: 'Oheislaitteet',
+                Gaming: 'Pelaaminen',
+            };
+            document.title = `Kauppa - ${typeValue ? titles[typeValue] : searchValue}`;
+
+            if (typeValue) {
+                loadProducts(typeValue, 'tags');
+            } else if (searchValue) {
+                loadProducts(searchValue, 'search')
+            } else {
+                document.getElementById('productsPageContainer').innerHTML = '<p class="text-2xl">Ei löytynyt tuotteita<p>'
+            }
+
+            showCartItemAmount();
+            listenForCartChanges('cartData', 100, showCartItemAmount);
+            search()
+        </script>
+    </body>
+</html>
